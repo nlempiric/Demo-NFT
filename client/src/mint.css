@@ -1,0 +1,27 @@
+.accordion h2
+{
+    text-align: center;    
+}
+.accordion-body
+{
+    display: flex;
+    justify-content: center;
+}
+.card
+{
+    padding-block: 20px;
+    width: 400px;
+}
+input
+{
+    width: 280px;
+}
+.btn
+{
+    width: 280px;
+    margin-block: 20px;
+}
+.accordion-button
+{
+    padding-inline-start: 45%;
+}
