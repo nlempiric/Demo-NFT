@@ -8,6 +8,7 @@ const Mint = () => {
   const { address } = useAccount();
   const [flag, setFlag] = useState(false);
   const [Image, setImage] = useState();
+  const [nftImages, setnftImages] = useState([]);
   // console.log("addressssssssss",address)
   // const ncontract = props.state;
 
@@ -65,64 +66,98 @@ const Mint = () => {
       console.log('gtj');
     }
   }
+  // const handleShowNFT=async()=>
+  // {
+  //   setFlag(false);
+  //   const TokenId=document.getElementById('tid').value;
+    
+
+  //   if(TokenId!="")
+  //   {
+      
+  //     const showUri=await ncontract.baseTokenURI();
+  //     if(showUri!="")
+  //     {
+  //       const balance=await ncontract.balanceOf(address);
+  //       console.log("balanc of owner",Number(balance));
+        
+  //       console.log("metdataaaa",showUri);
+  //       for(let i=0;i<balance;i++)
+  //       {
+  //         const TokensOfOwner=await ncontract.tokenOfOwnerByIndex(address,i);
+  //         const TooInNumber=Number(TokensOfOwner);
+  //         if(TooInNumber==TokenId)
+  //         {
+  //           setFlag(true);
+  //           const MetadataTid=showUri+TokenId;
+  //           const FetchData=await fetch(MetadataTid);
+  //           const FetchJsonData=await FetchData.json();
+  //           const ImageURL=FetchJsonData.image;
+  //           console.log("Json Data",FetchJsonData);
+  //           console.log("Image URL",ImageURL);
+  //           setImage(ImageURL);
+  //           document.getElementById('ImageId').classList.add('ImageDIV');
+  //         }
+  //       }
+  //       if(flag)
+  //       {
+          
+  //       }
+  //       else
+  //       {
+  //         console.log("Token Id is not exists");
+  //         alert("Token Id is not exists")
+  //         setImage();
+  //         document.getElementById('ImageId').classList.remove('ImageDIV');
+  //       }
+    
+  //     }
+  //     else
+  //     {
+  //       alert('Set Metadata URI to Show NFT ');
+  //     }
+  //   }
+  //   else
+  //   {
+  //     alert('Enter Token Id')
+  //   }
+  // }
+ 
+  
   const handleShowNFT=async()=>
   {
-    setFlag(false);
-    const TokenId=document.getElementById('tid').value;
-    
-
-    if(TokenId!="")
-    {
       
-      const showUri=await ncontract.baseTokenURI();
-      if(showUri!="")
+    const showUri=await ncontract.baseTokenURI();
+    if(showUri!="")
+    {
+      const balance=await ncontract.balanceOf(address);
+      console.log("balanc of owner",Number(balance));
+      
+      console.log("metdataaaa",showUri);
+      for(let i=0;i<balance;i++)
       {
-        const balance=await ncontract.balanceOf(address);
-        console.log("balanc of owner",Number(balance));
+        const TokensOfOwner=await ncontract.tokenOfOwnerByIndex(address,i);
+        const TooInNumber=Number(TokensOfOwner);
+        const MetadataTid=showUri+TooInNumber;
+        const FetchData=await fetch(MetadataTid);
+        const FetchJsonData=await FetchData.json();
+        const ImageURL=FetchJsonData.image;
+        // console.log("Json Data",FetchJsonData);
+        console.log("Image URL",ImageURL);
+        // setnftImages([...nftImages,ImageURL]);
+        setnftImages(nftImages=>[...nftImages,ImageURL]);
+        nftImages.push(ImageURL);
         
-        console.log("metdataaaa",showUri);
-        for(let i=0;i<balance;i++)
-        {
-          const TokensOfOwner=await ncontract.tokenOfOwnerByIndex(address,i);
-          const TooInNumber=Number(TokensOfOwner);
-          if(TooInNumber==TokenId)
-          {
-            setFlag(true);
-            const MetadataTid=showUri+TokenId;
-            const FetchData=await fetch(MetadataTid);
-            const FetchJsonData=await FetchData.json();
-            const ImageURL=FetchJsonData.image;
-            console.log("Json Data",FetchJsonData);
-            console.log("Image URL",ImageURL);
-            setImage(ImageURL);
-            document.getElementById('ImageId').classList.add('ImageDIV');
-            
 
-          }
-        }
-        if(flag)
-        {
-          
-        }
-        else
-        {
-          console.log("Token Id is not exists");
-          alert("Token Id is not exists")
-          setImage();
-          document.getElementById('ImageId').classList.remove('ImageDIV');
-        }
-    
       }
-      else
-      {
-        alert('Set Metadata URI to Show NFT ');
-      }
+      console.log("images dataaaaaa",nftImages);
     }
     else
     {
-      alert('Enter Token Id')
+      alert('Set Metadata URI to Show NFT ');
     }
-  }
+}
+
 
   return (
     <>
@@ -212,11 +247,11 @@ const Mint = () => {
             <div class="accordion-body">
               <div class="card" >
                 <div class="card-body">
-                  <input type="number" id='tid' placeholder='Enter Token ID' /><br />
+                  {/* <input type="number" id='tid' placeholder='Enter Token ID' /><br /> */}
                   <button className='btn btn-primary' onClick={handleShowNFT}>SHOW</button>
-                  <div>
+                  {/* <div>
                     <img id="ImageId" src={Image} alt="" />
-                  </div>
+                  </div> */}
                 </div>
               </div>     
             </div>
