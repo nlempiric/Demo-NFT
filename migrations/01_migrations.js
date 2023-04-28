@@ -1,8 +1,8 @@
-const NFT=artifacts.require('NFT');
+const NFT = artifacts.require('NFT');
 
 module.exports=function(deployer)
 {
     deployer.deploy(NFT);
 };
 
-// 0x4dBbc26A7Dd33948A69Ad862FBF9Eaa6Cf0eCCBE
+// 0xbCbC1EEcFbCD83f9D0BAd1dcd2675C8a39f3C3f1

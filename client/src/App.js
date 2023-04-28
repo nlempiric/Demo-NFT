@@ -1,8 +1,7 @@
 import logo from './logo.svg';
 import './App.css';
 import Mint from './Mint'; 
-// import React, { useEffect } from 'react';
-import React, { useEffect } from 'react';
+// import React, { useEffect, useState, useContext } from 'react';
 import "@rainbow-me/rainbowkit/styles.css";
 import { getDefaultWallets, RainbowKitProvider } from "@rainbow-me/rainbowkit";
 import { chain, configureChains, createClient, WagmiConfig } from "wagmi";
@@ -12,12 +11,12 @@ import abi from './NFT.json'
 import { Chain } from 'wagmi';
 import { ethers } from 'ethers';
 
+
 const providers=new ethers.providers.Web3Provider(window.ethereum);
 const signer=providers.getSigner();
-const contractAddress="0x4dBbc26A7Dd33948A69Ad862FBF9Eaa6Cf0eCCBE";
+const contractAddress="0xbCbC1EEcFbCD83f9D0BAd1dcd2675C8a39f3C3f1";
 const contractAbi = abi.abi;
 const ncontract=new ethers.Contract(contractAddress,contractAbi,signer)
-
 
 const sepolia: Chain = {
   id: 11155111,
@@ -66,11 +65,27 @@ const wagmiClient = createClient({
 
 
 function App() {
+
+  // const[State,setState] = useState({provider:null,signer:null,ncontract:null});
+
+  // // useEffect(()=>{
+  //   // const Get_contract = () => {
+  //     const provider=new ethers.providers.Web3Provider(window.ethereum);
+  //     const signer=provider.getSigner();
+  //     const contractAddress="0xbCbC1EEcFbCD83f9D0BAd1dcd2675C8a39f3C3f1";
+  //     const contractAbi = abi.abi;
+  //     const ncontract=new ethers.Contract(contractAddress,contractAbi,signer);
+  //     // setState({provider,signer,ncontract});
+  //   // }; 
+  //   // Get_contract();
+  // // },[]);
+  
+
   return (
     <div className="App">
      <WagmiConfig client={wagmiClient}>
           <RainbowKitProvider chains={chains}>
-            <Mint/>  
+            <Mint />  
            
           </RainbowKitProvider>
       </WagmiConfig>
