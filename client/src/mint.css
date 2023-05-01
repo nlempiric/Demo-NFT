@@ -11,6 +11,7 @@
 {
     padding-block: 20px;
     width: 400px;
+    margin-inline: auto;
 }
 input
 {

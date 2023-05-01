@@ -1,18 +1,55 @@
 import { ConnectButton } from "@rainbow-me/rainbowkit";
 import { useAccount} from "wagmi";
 import { ncontract } from "./App";
-import { useState } from "react";
+import { useEffect, useState ,useRef} from "react";
 import './mint.css';
+import { id } from "ethers/lib/utils";
 
 const Mint = () => {
   const { address } = useAccount();
   const [flag, setFlag] = useState(false);
   const [Image, setImage] = useState();
   const [nftImages, setnftImages] = useState([]);
+  const [shownftButton, setshownftButton] = useState(true);
   // console.log("addressssssssss",address)
   // const ncontract = props.state;
+  const idivRef = useRef(null);
 
-  
+
+  useEffect(() => {
+
+    const Fetchdata =async()=>{
+      const showUri=await ncontract.baseTokenURI();
+      const balance=await ncontract.balanceOf(address);
+      console.log("balanc of owner",Number(balance));
+      
+      console.log("metdataaaa",showUri);
+      let images = [];
+      for(let i=0;i<balance;i++)
+      {
+        const TokensOfOwner=await ncontract.tokenOfOwnerByIndex(address,i);
+        const TooInNumber=Number(TokensOfOwner);
+        const MetadataTid=showUri+TooInNumber;
+        const FetchData=await fetch(MetadataTid);
+        const FetchJsonData=await FetchData.json();
+        const ImageURL=FetchJsonData.image;
+        // console.log("Json Data",FetchJsonData);
+        console.log("Image URL",ImageURL);
+        // setnftImages([...nftImages,ImageURL]);
+        // setnftImages(nftImages=>[...nftImages,ImageURL]);
+        // nftImages.push(ImageURL);
+        
+        images.push(ImageURL);
+
+      }
+       console.log("images dataaaaaa",images);
+       setnftImages(images);
+       console.log("nft Imagagesss",nftImages);
+    }
+    Fetchdata();
+    
+  }, []);
+
   const handlesetUri=async()=>
   {
     const uriInput=document.getElementById('seturiId').value;
@@ -65,6 +102,34 @@ const Mint = () => {
     {
       console.log('gtj');
     }
+  }
+
+
+  const handleShowNFT=()=>
+  {
+    nftImages.map((el,key)=>
+    {
+      console.log("dataaa",el);
+      const img = document.createElement("img");
+      img.src = el;
+      img.style.width="360px";
+    
+      const idiv = idivRef.current;
+      if (idiv) {
+        idiv.appendChild(img);
+      }
+    })
+    setshownftButton(false);
+  }
+
+
+  const handleClose=()=>
+  {
+    console.log("closeeeeeeeeeeee");
+    const idiv = document.getElementsByClassName('imgDivClass')[0];
+    idiv.innerHTML='';
+    setshownftButton(true);
+    
   }
   // const handleShowNFT=async()=>
   // {
@@ -124,39 +189,39 @@ const Mint = () => {
   // }
  
   
-  const handleShowNFT=async()=>
-  {
+//   const handleShowNFT=async()=>
+//   {
       
-    const showUri=await ncontract.baseTokenURI();
-    if(showUri!="")
-    {
-      const balance=await ncontract.balanceOf(address);
-      console.log("balanc of owner",Number(balance));
+//     const showUri=await ncontract.baseTokenURI();
+//     if(showUri!="")
+//     {
+//       const balance=await ncontract.balanceOf(address);
+//       console.log("balanc of owner",Number(balance));
       
-      console.log("metdataaaa",showUri);
-      for(let i=0;i<balance;i++)
-      {
-        const TokensOfOwner=await ncontract.tokenOfOwnerByIndex(address,i);
-        const TooInNumber=Number(TokensOfOwner);
-        const MetadataTid=showUri+TooInNumber;
-        const FetchData=await fetch(MetadataTid);
-        const FetchJsonData=await FetchData.json();
-        const ImageURL=FetchJsonData.image;
-        // console.log("Json Data",FetchJsonData);
-        console.log("Image URL",ImageURL);
-        // setnftImages([...nftImages,ImageURL]);
-        setnftImages(nftImages=>[...nftImages,ImageURL]);
-        nftImages.push(ImageURL);
+//       console.log("metdataaaa",showUri);
+//       for(let i=0;i<balance;i++)
+//       {
+//         const TokensOfOwner=await ncontract.tokenOfOwnerByIndex(address,i);
+//         const TooInNumber=Number(TokensOfOwner);
+//         const MetadataTid=showUri+TooInNumber;
+//         const FetchData=await fetch(MetadataTid);
+//         const FetchJsonData=await FetchData.json();
+//         const ImageURL=FetchJsonData.image;
+//         // console.log("Json Data",FetchJsonData);
+//         console.log("Image URL",ImageURL);
+//         // setnftImages([...nftImages,ImageURL]);
+//         setnftImages(nftImages=>[...nftImages,ImageURL]);
+//         nftImages.push(ImageURL);
         
 
-      }
-      console.log("images dataaaaaa",nftImages);
-    }
-    else
-    {
-      alert('Set Metadata URI to Show NFT ');
-    }
-}
+//       }
+//       console.log("images dataaaaaa",nftImages);
+//     }
+//     else
+//     {
+//       alert('Set Metadata URI to Show NFT ');
+//     }
+// }
 
 
   return (
@@ -244,16 +309,18 @@ const Mint = () => {
             </button>
           </h2>
           <div id="collapseFive" class="accordion-collapse collapse" aria-labelledby="headingFive" data-bs-parent="#accordionExample">
-            <div class="accordion-body">
+            <div class="accordion-body d-dlex flex-column justify-content-center">
               <div class="card" >
                 <div class="card-body">
                   {/* <input type="number" id='tid' placeholder='Enter Token ID' /><br /> */}
-                  <button className='btn btn-primary' onClick={handleShowNFT}>SHOW</button>
-                  {/* <div>
-                    <img id="ImageId" src={Image} alt="" />
-                  </div> */}
-                </div>
+                  {shownftButton ? <button className='btn btn-primary' onClick={handleShowNFT}>SHOW</button>
+                  :<button className='btn btn-primary' onClick={handleClose}>Close</button>}
+                    
+                </div>   
               </div>     
+              <div className="imgDivClass" ref={idivRef} style={{display:"flex",justifyContent:"flex-start",flexWrap:'wrap',width:"1800px"}}>
+                    
+              </div>
             </div>
           </div>
         </div>
